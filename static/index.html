@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo Capture and Upload</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+      background-color: #f9f9f9;
+      color: #333;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="file"] {
+      display: block;
+      margin: 20px auto;
+      font-size: 1.2rem;
+    }
+
+    button {
+      padding: 16px 32px;
+      font-size: 1.4rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .status {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      color: #28a745;
+    }
+  </style>
+</head>
+<body>
+  <h1>📷 Take a Photo and Send</h1>
+
+  <input
+    type="file"
+    accept="image/*"
+    capture="environment"
+    id="cameraInput"
+  />
+
+  <button onclick="uploadImage()">📤 Send to Device</button>
+
+  <div class="status" id="status"></div>
+
+  <script>
+    let photoFile;
+
+    document.getElementById("cameraInput").addEventListener("change", (event) => {
+      photoFile = event.target.files[0];
+      document.getElementById("status").textContent = "✅ Photo ready to upload";
+    });
+
+    function uploadImage() {
+      if (!photoFile) {
+        alert("Please take a photo first!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("photo", photoFile);
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("Network response was not OK");
+          return response.json();
+        })
+        .then((data) => {
+          document.getElementById("status").textContent = "✅ Photo sent successfully!";
+          photoFile = null;
+        })
+        .catch((error) => {
+          document.getElementById("status").textContent = "❌ Error: " + error;
+        });
+    }
+  </script>
+</body>
+</html>
