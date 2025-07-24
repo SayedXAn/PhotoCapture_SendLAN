@@ -1,37 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Camera Photo Upload</title>
-</head>
-<body>
-  <h2>Take a Photo and Send</h2>
-  <input type="file" accept="image/*" capture="environment" id="cameraInput">
-  <button onclick="uploadImage()">Send to Device</button>
+  <head>
+    <title>Camera Photo Upload</title>
+  </head>
+  <body>
+    <h1>Take a Photo and Send</h1>
+    <input
+      type="file"
+      accept="image/*"
+      capture="environment"
+      id="cameraInput"
+    />
+    <button onclick="uploadImage()">Send to Device</button>
 
-  <script>
-    let photoFile;
+    <script>
+      let photoFile;
 
-    document.getElementById('cameraInput').addEventListener('change', (event) => {
-      photoFile = event.target.files[0];
-    });
+      document
+        .getElementById("cameraInput")
+        .addEventListener("change", (event) => {
+          photoFile = event.target.files[0];
+        });
 
-    function uploadImage() {
-      if (!photoFile) {
-        alert("Please take a photo first!");
-        return;
+      function uploadImage() {
+        if (!photoFile) {
+          alert("Please take a photo first!");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("photo", photoFile);
+
+        fetch("http://172.16.10.188:5000/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("Network response was not OK");
+            return response.text();
+          })
+          .then((data) => alert("Photo sent successfully!"))
+          .catch((error) => alert("Error sending photo: " + error));
       }
-
-      const formData = new FormData();
-      formData.append("photo", photoFile);
-
-      fetch("http://172.16.10.188:5000/upload", {  // Replace with your LAN device IP
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.text())
-      .then(response => alert("Photo sent successfully!"))
-      .catch(error => alert("Error sending photo: " + error));
-    }
-  </script>
-</body>
+    </script>
+  </body>
 </html>
+
