@@ -6,7 +6,7 @@ app = Flask(__name__, static_folder='static')
 CORS(app)
 
 # ✅ Change the directory to your desired folder
-UPLOAD_FOLDER = r"C:\CUP\VISA AR Photobooth\Photos"
+UPLOAD_FOLDER = r"C:\CUP\VISA_AR_Photobooth\VISA AR Photobooth\Photos"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route('/')
@@ -27,7 +27,7 @@ def upload_photo():
     filepath = os.path.join(UPLOAD_FOLDER, new_filename)
 
     photo.save(filepath)
-    print(f"Saved photo as {new_filename}")
+    print(f"Saved photo as {new_filename} at {filepath}")
     return jsonify({"message": f"Photo saved as {new_filename}"}), 200
 
 if __name__ == '__main__':
